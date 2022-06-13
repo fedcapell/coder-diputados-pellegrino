@@ -1,0 +1,123 @@
+CREATE TABLE IF NOT EXISTS Diputados ( 
+id_diputado int auto_increment not null primary key unique,
+Apellido varchar(50) not null,
+Nombre varchar(50) not null,
+Genero varchar(50) not null,
+Distrito varchar(50) not null,
+Inicio_de_mandato date not null,
+Fin_de_mandato date not null,
+Juramento date not null,
+Cese date not null,
+Bloque varchar(50) not null,
+Bloque_inicio date not null,
+Bloque_fin date not null
+);
+
+create table if not exists Bloque (
+id_bloque int auto_increment not null primary key unique,
+Bloque varchar(50) not null,
+Apellido_Diputado varchar(50) not null,
+Nombre_Diputado varchar(50) not null,
+Cargo varchar(50) not null,
+Cantidad_de_integrantes int not null,
+Interbloque varchar(50) not null
+);
+
+create table if not exists Grupo_de_Amistad_Parlamentaria (
+id_grupo int auto_increment not null primary key unique,
+Grupo varchar(50) not null,
+Pais varchar(50) not null,
+pais_index_id varchar(50) not null,
+Diputado varchar(50) not null,
+Cargo varchar(50) not null,
+Bloque varchar(50) not null,
+Distrito varchar(50) not null,
+Mandato varchar(50) not null
+);
+
+create table if not exists Misiones_Oficiales (
+id_viaje int auto_increment not null primary key unique,
+Institucion  varchar(50) not null,
+Fecha_inicio date not null,
+Fecha_fin date not null,
+id_pais_destino varchar(50) not null,
+Pais_destino varchar(50) not null,
+Ciudad varchar(50) not null,
+id_diputado int not null,
+Nombre varchar(50) not null,
+id_bloque int not null,
+Bloque varchar(50) not null,
+Bloque_inicio date not null,
+Bloque_fin date not null
+);
+
+create table if not exists Estructura_organica (
+id_persona int auto_increment not null primary key unique,
+Dependencia varchar(50) not null,
+Estructura varchar(50) not null,
+Funcion varchar(50) not null,
+id_dependencia int not null,
+Nombre varchar(50) not null,
+Apellido varchar(50) not null
+);
+
+create table if not exists Nomina_de_personal (
+id_persona int auto_increment not null primary key unique,
+Apellido varchar(50) not null,
+Nombre varchar(50) not null,
+Escalafon varchar(50) not null,
+Estructura_desempeaño varchar(50) not null,
+Convenio varchar(50) not null
+);
+
+create table if not exists Escala_Salarial (
+id_escala int auto_increment not null primary key unique,
+Categorias varchar(50) not null,
+Monto_en_pesos int not null
+);
+
+create table if not exists Bloque_de_diputados (
+id_diputado int auto_increment not null primary key unique,
+id_bloque int not null,
+FOREIGN KEY (id_diputado) REFERENCES Diputados (id_diputados)
+);
+
+create table if not exists Grupos_Parlamentarios_Diputados (
+id_diputado int auto_increment not null primary key unique,
+id_bloque int not null,
+id_grupo int not null,
+Bloque varchar(50) not null,
+FOREIGN KEY (id_diputado) REFERENCES Diputados (id_diputados),
+FOREIGN KEY (id_grupo) REFERENCES Grupo_de_Amistad_Parlamentaria (id_grupo),
+FOREIGN KEY (id_bloque) REFERENCES Bloque (id_bloque)
+);
+
+create table if not exists Misiones_Oficiales_Diputados (
+id_diputado int auto_increment not null primary key unique,
+id_bloque int not null,
+id_viaje int not null,
+FOREIGN KEY (id_diputado) REFERENCES Diputados (id_diputados),
+FOREIGN KEY (id_viaje) REFERENCES Misiones_Oficiales (id_viaje),
+FOREIGN KEY (id_bloque) REFERENCES Bloque (id_bloque)
+);
+
+create table if not exists Nomina_Personal_id (
+id_dependencia int auto_increment not null primary key unique,
+id_diputado int not null,
+FOREIGN KEY (id_diputado) REFERENCES Diputados (id_diputados),
+FOREIGN KEY (id_dependencia) REFERENCES Estructura_organica (id_dependencia)
+);
+
+create table if not exists Nomina_Categorias (
+id_persona int auto_increment not null primary key unique,
+id_dependencia int not null,
+FOREIGN KEY (id_dependencia) REFERENCES Nomina_Personal_id (id_dependencia),
+FOREIGN KEY (id_persona) REFERENCES Nomina_de_personal (id_persona)
+);
+
+create table if not exists Nomina_Salarial (
+id_persona int auto_increment not null primary key unique,
+id_escala int not null,
+FOREIGN KEY (id_persona) REFERENCES Nomina_Categorias (id_persona),
+FOREIGN KEY (id_escala) REFERENCES Escala_Salarial (id_escala)
+);
